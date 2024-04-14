@@ -1,0 +1,29 @@
+.textfield-container {
+    position: relative;
+  }
+  
+  .textfield-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+    color: #6b7280;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  
+  .textfield-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+  }
+  
+  .textfield-input:focus + .textfield-label, .textfield-input:not(:placeholder-shown) + .textfield-label {
+    font-size: 0.75rem;
+    top: 0;
+    transform: translateY(0);
+    color: #4f46e5;
+  }
+  
