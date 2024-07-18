@@ -1,4 +1,5 @@
 import React from "react";
+import "./LoginContainer.css";
 
 export default function LoginContainer({
   children,
@@ -10,7 +11,7 @@ export default function LoginContainer({
   return (
     <div className="flex justify-center items-center h-screen">
       <div
-        className={`bg-white p-8 rounded-lg shadow-lg`}
+        className={`bg-white p-8 rounded-lg custom-shadow`}
         style={{ width: `${containerWidth}px` }}
       >
         {children}
