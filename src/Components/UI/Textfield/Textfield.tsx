@@ -58,6 +58,8 @@ const TextField = ({
         className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
           error
             ? "border-red-500"
+            : showCheckmark
+            ? "border-green-500"
             : isFocused
             ? "border-black"
             : "border-gray-300"

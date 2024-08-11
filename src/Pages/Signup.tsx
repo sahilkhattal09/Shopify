@@ -102,7 +102,7 @@ export default function Signup() {
           />
         </div>
 
-        <div className="flex flex-row space-x-4 mt-4 mb-4 relative">
+        <div className="flex flex-row space-x-4 mt-4 mb-4">
           <TextField
             type="password"
             label="Password"
@@ -124,8 +124,10 @@ export default function Signup() {
               form.touched.confirmPassword && form.errors.confirmPassword
             }
             error={Boolean(form.errors.confirmPassword)}
-            hidePasswordToggle={false}
-            showCheckmark={true}
+            showCheckmark={
+              !!form.values.Password &&
+              form.values.Password === form.values.confirmPassword
+            }
           />
         </div>
 
