@@ -1,16 +1,31 @@
 .textfield-wrapper {
   position: relative;
-
+  margin-bottom: 2.5rem; 
 }
 
 .textfield-input {
   width: 100%;
   padding: 10px;
+   
   font-size: 16px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+}
+
+.textfield-input.password-input {
+  padding-right: 40px; /* Adjust padding to make room for the toggle button */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .textfield-label {
@@ -29,28 +44,32 @@
 .textfield-input:not(:placeholder-shown) + .textfield-label,
 .floating-label {
   top: -10px;
-  font-size: 12px;
+  font-size: 14px;
   color: #000;
+  font-weight: bold;
 }
 
 
-  .flex {
-    display: flex;
-  }
-  
-  .flex-row {
-    flex-direction: row;
-  }
-  
-  .flex-col {
-    flex-direction: column;
-  }
-  
-  .space-x-4 {
-    gap: 1rem; /* Adjust the value as needed */
-  }
-  
-  .space-y-4 {
-    gap: 1rem; /* Adjust the value as needed */
-  }
-  
+
+
+
+
+.flex {
+  display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.space-x-4 {
+  gap: 1rem; /* Adjust the value as needed */
+}
+
+.space-y-4 {
+  gap: 1rem; /* Adjust the value as needed */
+}
