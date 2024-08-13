@@ -19,9 +19,18 @@ const initialState: FormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .email("Invalid email address!")
+    .email("Invalid email address")
+    .matches(
+      /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email address"
+    )
     .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
+      "Password must be 8+ chars, with 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+    )
+    .required("Password is required"),
 });
 
 const handleSubmit = (values: FormValues) => {
@@ -37,7 +46,7 @@ export default function Login() {
   });
 
   return (
-    <LoginContainer containerWidth={500}>
+    <LoginContainer containerWidth={430}>
       <div>
         <Images
           src={"/Logo/Shopmart.png"}

@@ -4,9 +4,13 @@ import Signup from "./Pages/Signup";
 import Login from "./Pages/LogIn";
 import Header from "./Components/UI/Header/Header";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/signup" element={<Signup />} />

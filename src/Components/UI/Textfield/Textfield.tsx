@@ -49,13 +49,13 @@ const TextField = ({
   };
 
   return (
-    <div className={`relative mb-10 ${className} flex items-center`}>
+    <div className={`textfield-wrapper relative mb-10 ${className}`}>
       <input
         type={type === "password" && showPassword ? "text" : type}
         value={value}
         onChange={onChange}
         name={name}
-        className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
+        className={`textfield-input w-full px-3 py-2 border rounded-md focus:outline-none ${
           error
             ? "border-red-500"
             : showCheckmark
@@ -70,9 +70,9 @@ const TextField = ({
       />
       {label && (
         <label
-          className={`absolute left-3 transition-all duration-300 ${
+          className={`textfield-label absolute left-3 transition-all duration-300 ${
             value || isFocused
-              ? "-top-4 text-xs font-bold text-black-500"
+              ? "-top-4 text-xs font-bold text-black"
               : "top-2 text-gray-500"
           }`}
         >
@@ -83,7 +83,7 @@ const TextField = ({
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600"
+          className="password-toggle absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600"
         >
           {showPassword ? <FaEyeSlash /> : <FaEye />}
         </button>
@@ -107,7 +107,7 @@ const TextField = ({
         </div>
       )}
       {error && errorMessage && (
-        <div className="absolute bottom-[-1.5rem] left-0 text-red-600 text-sm mt-1">
+        <div className="absolute left-0 text-red-600 text-sm mt-1">
           <ErrorMessage error={error} message={errorMessage} />
         </div>
       )}

@@ -11,7 +11,7 @@ export default function ErrorMessage({
 }: ErrorMessageProps) {
   return (
     <div
-      className={`text-sm ${
+      className={`text-xs ${
         error ? "text-red-600" : "text-black"
       } ${className}`}
     >

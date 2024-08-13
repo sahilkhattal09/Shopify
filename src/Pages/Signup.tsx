@@ -5,6 +5,7 @@ import TextField from "../Components/UI/Textfield/Textfield";
 import Button from "../Components/UI/Button/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { toastMessage } from "../Modules/toast";
 
 interface SignupFormvalues {
   FirstName: string;
@@ -25,13 +26,35 @@ const initialState: SignupFormvalues = {
 };
 
 const validationSchema = Yup.object({
-  FirstName: Yup.string().required("First Name is required"),
-  LastName: Yup.string().required("Last Name is required"),
+  FirstName: Yup.string()
+    .max(15, "First Name must be at most 15 characters long")
+    .matches(/^[A-Za-z]+$/, "First Name must contain only letters")
+    .required("First Name is required"),
+
+  LastName: Yup.string()
+    .max(15, "Last Name must be at most 15 characters long")
+    .matches(/^[A-Za-z]+$/, "Last Name must contain only letters")
+    .required("Last Name is required"),
+
   email: Yup.string()
     .email("Invalid email address")
+    .matches(
+      /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email address"
+    )
     .required("Email is required"),
-  phonenumber: Yup.string().required("Phone number is required"),
-  Password: Yup.string().required("Password is required"),
+  phonenumber: Yup.string()
+    .matches(
+      /^\+?[1-9]\d{1,14}$|^(\+?\d{1,3}[-.\s]?)?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/,
+      "Please enter a valid phone number"
+    )
+    .required("Phone number is required"),
+  Password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
+      "Password must be 8+ chars, with 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+    )
+    .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("Password"), undefined], "Password must match")
     .required("Confirm password is required"),
@@ -39,6 +62,12 @@ const validationSchema = Yup.object({
 
 const signupFormSubmit = (values: SignupFormvalues) => {
   console.log(values);
+  toastMessage({
+    message: "Sign up successful!",
+    type: "success", // Type can be 'success', 'error', 'warning', or 'info'
+  });
+
+  // Navigate to login page after showing the toast
 };
 
 export default function Signup() {
@@ -131,7 +160,7 @@ export default function Signup() {
           />
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-4">
           <Button
             type="submit"
             shape="rounded"
