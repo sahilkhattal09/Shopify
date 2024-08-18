@@ -10,6 +10,10 @@ module.exports = {
       fontFamily: {
         cursive: ['"Dancing Script"', "cursive"], // Example of a cursive font
       },
+      colors: {
+        softBlue: "#A0C4FF",
+        AliceBlue: "#F0F8FF",
+      },
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0" },
