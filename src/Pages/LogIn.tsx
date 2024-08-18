@@ -1,12 +1,52 @@
+import React from "react";
 import LoginContainer from "../Components/UI/Containers/LoginContainer";
 import Images from "../Components/Image/Images";
 import TextField from "../Components/UI/Textfield/Textfield";
 import Button from "../Components/UI/Button/Button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+const initialState: FormValues = {
+  email: "",
+  password: "",
+};
+
+const validationSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .matches(
+      /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/,
+      "Please enter a valid email address"
+    )
+    .required("Email is required"),
+  password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
+      "Password must be 8+ chars, with 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+    )
+    .required("Password is required"),
+});
+
+const handleSubmit = (values: FormValues) => {
+  console.log(values); // Handle form submission logic here
+};
 
 export default function Login() {
+  const navigate = useNavigate();
+  const form = useFormik<FormValues>({
+    initialValues: initialState,
+    validationSchema: validationSchema,
+    onSubmit: handleSubmit,
+  });
+
   return (
-    <LoginContainer containerWidth={500}>
+    <LoginContainer containerWidth={430}>
       <div>
         <Images
           src={"/Logo/Shopmart.png"}
@@ -16,23 +56,52 @@ export default function Login() {
           className="mx-auto mb-4"
         />
 
-        <div>
-          <TextField label="Email" />
+        <form onSubmit={form.handleSubmit}>
+          <div>
+            <TextField
+              type="email"
+              label="Email"
+              name="email"
+              value={form.values.email}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.email && form.errors.email}
+              error={Boolean(form.errors.email)}
+            />
+          </div>
+          <div className="mt-12">
+            <TextField
+              type="password"
+              label="Password"
+              name="password"
+              value={form.values.password}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.password && form.errors.password}
+              error={Boolean(form.errors.password)}
+            />
+          </div>
+          <div className="flex justify-center mt-16">
+            <Button
+              type="submit"
+              shape="rounded"
+              varient="colored"
+              className="btn-secondary"
+            >
+              Sign in
+            </Button>
+          </div>
+        </form>
+
+        <div className="flex justify-center mt-4">
+          Don't Have an Account?{" "}
+          <span
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => navigate("/signup")}
+          >
+            Signup
+          </span>
         </div>
-        <div className="mt-10">
-          <TextField label="Password " />
-        </div>
-      </div>
-      <div className="flex justify-center mt-10">
-        <Button shape="rounded" varient="colored" className="btn-secondary">
-          Sign in
-        </Button>
-      </div>
-      <div className="flex justify-center mt-4">
-        Dont Have an Account?{" "}
-        <Link to="/signup" style={{ color: "blue" }}>
-          sign Up
-        </Link>
       </div>
     </LoginContainer>
   );

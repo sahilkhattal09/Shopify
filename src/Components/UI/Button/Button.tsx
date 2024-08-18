@@ -5,7 +5,7 @@ interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   shape?: "rectangle" | "rounded";
-  varient?: "colored" | "outlined";
+  varient?: "colored" | "outlined" | "none";
   className?: string;
   type?: "button" | "submit" | "reset"; // Adding type for button types
 }
@@ -21,7 +21,12 @@ const Button = ({
 }: ButtonProps) => {
   const baseStyles = "btn-base";
   const shapeStyles = shape === "rounded" ? "btn-rounded" : "btn-rectangle";
-  const variantStyles = varient === "outlined" ? "btn-outlined" : "btn-colored";
+  const variantStyles =
+    varient === "outlined"
+      ? "btn-outlined"
+      : varient === "none"
+      ? "btn-none" // Handle "none" variant
+      : "btn-colored"; // Default to "colored" if no match
   const combinedStyles = `${baseStyles} ${shapeStyles} ${variantStyles} ${className}`;
 
   return (
