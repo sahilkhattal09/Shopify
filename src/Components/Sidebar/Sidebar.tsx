@@ -40,7 +40,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
         {sidebarItems.map((item, index) => (
           <li key={index} className="w-[96%] mt-2 mx-4">
             <Button
-              className="text-white p-4 rounded-lg border border-white bg-softBlue transition-colors duration-300 hover:bg-darkerSoftBlue hover:text-black  active:text-black w-full h-full"
+              className="text-black p-4 rounded-lg border border-white bg-softBlue transition-colors duration-300 hover:bg-darkerSoftBlue w-full h-full"
               varient="none"
             >
               {item.name}
