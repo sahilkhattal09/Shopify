@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         softBlue: "#A0C4FF",
         AliceBlue: "#F0F8FF",
+        darkerSoftBlue: "#92c5dc",
       },
       keyframes: {
         fadeIn: {
