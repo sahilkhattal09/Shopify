@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Images from "../../Image/Images";
+import SearchBar from "../../SearchBar/Searchbar";
 
 type NavigationItemsType = { name: string; route: string };
 
@@ -10,27 +11,28 @@ const navigationItems: NavigationItemsType[] = [
   { name: "Return", route: "/login" },
 ];
 
-export default function Header({
-  toggleSidebar,
-}: {
+interface HeaderProps {
   toggleSidebar: () => void;
-}) {
+  className?: string; // Add className as an optional prop
+}
+
+export default function Header({ toggleSidebar, className = "" }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-800 p-4">
+    <div className={`bg-gray-800 p-4 ${className}`}>
       <div className="container mr-auto flex justify-between items-center">
         {/* Left section with logo and hamburger menu */}
         <div className="flex items-center space-x-4">
           <button
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
-            className="text-white "
+            className="text-white"
           >
             <GiHamburgerMenu size={24} />
           </button>
           <div
-            className="flex items-center space-x-2 ml-2"
+            className="flex items-center space-x-2 ml-2 cursor-pointer"
             onClick={() => navigate("/")}
             aria-label="Navigate to home"
           >
@@ -45,6 +47,11 @@ export default function Header({
             </span>
           </div>
         </div>
+
+        <SearchBar
+          suggestions={[]}
+          placeholder="Search for Products, brands, and more"
+        />
 
         {/* Right section with navigation items */}
         <div className="space-x-4 hidden md:flex">
