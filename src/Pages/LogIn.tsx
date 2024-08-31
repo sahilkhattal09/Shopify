@@ -1,4 +1,3 @@
-import React from "react";
 import LoginContainer from "../Components/UI/Containers/LoginContainer";
 import Images from "../Components/Image/Images";
 import TextField from "../Components/UI/Textfield/Textfield";
@@ -6,15 +5,17 @@ import Button from "../Components/UI/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { toastMessage } from "../Modules/toast";
 
 interface FormValues {
   email: string;
-  password: string;
+  Password: string; // Capitalized 'P' here
 }
 
 const initialState: FormValues = {
   email: "",
-  password: "",
+  Password: "", // Capitalized 'P' here
 };
 
 const validationSchema = Yup.object({
@@ -25,7 +26,7 @@ const validationSchema = Yup.object({
       "Please enter a valid email address"
     )
     .required("Email is required"),
-  password: Yup.string()
+  Password: Yup.string() // Capitalized 'P' here
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
       "Password must be 8+ chars, with 1 uppercase, 1 lowercase, 1 number, and 1 special character"
@@ -33,8 +34,34 @@ const validationSchema = Yup.object({
     .required("Password is required"),
 });
 
-const handleSubmit = (values: FormValues) => {
-  console.log(values); // Handle form submission logic here
+const SignInFormSubmit = async (values: FormValues, navigate: any) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/signin",
+      values
+    );
+    console.log("Sign-in response:", response.data);
+    if (response.data.message === "Sign in successful") {
+      toastMessage({
+        message: "Sign in successful!",
+        type: "success",
+      });
+
+      localStorage.setItem("FirstName", response.data.FirstName);
+      navigate("/dashboard");
+    } else {
+      toastMessage({
+        message: "Sign in failed!",
+        type: "error",
+      });
+    }
+  } catch (error) {
+    console.error("Error during signin:", error);
+    toastMessage({
+      message: "An error occurred during signin. Please try again.",
+      type: "error",
+    });
+  }
 };
 
 export default function Login() {
@@ -42,7 +69,7 @@ export default function Login() {
   const form = useFormik<FormValues>({
     initialValues: initialState,
     validationSchema: validationSchema,
-    onSubmit: handleSubmit,
+    onSubmit: (values) => SignInFormSubmit(values, navigate),
   });
 
   return (
@@ -73,12 +100,12 @@ export default function Login() {
             <TextField
               type="password"
               label="Password"
-              name="password"
-              value={form.values.password}
+              name="Password" // Capitalized 'P' here
+              value={form.values.Password} // Capitalized 'P' here
               onChange={form.handleChange}
               onBlur={form.handleBlur}
-              errorMessage={form.touched.password && form.errors.password}
-              error={Boolean(form.errors.password)}
+              errorMessage={form.touched.Password && form.errors.Password}
+              error={Boolean(form.errors.Password)}
             />
           </div>
           <div className="flex justify-center mt-16">

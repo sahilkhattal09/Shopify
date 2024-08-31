@@ -6,6 +6,7 @@ import Button from "../Components/UI/Button/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toastMessage } from "../Modules/toast";
+import axios from "axios";
 
 interface SignupFormvalues {
   FirstName: string;
@@ -60,14 +61,34 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-const signupFormSubmit = (values: SignupFormvalues) => {
-  console.log(values);
-  toastMessage({
-    message: "Sign up successful!",
-    type: "success", // Type can be 'success', 'error', 'warning', or 'info'
-  });
+const signupFormSubmit = async (values: SignupFormvalues, navigate: any) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/signup",
+      values
+    );
 
-  // Navigate to login page after showing the toast
+    if (response.data.message === "User registered successfully") {
+      toastMessage({
+        message: "Sign up successful!",
+        type: "success",
+      });
+
+      // Navigate to the login page after a successful signup
+      navigate("/login");
+    } else {
+      toastMessage({
+        message: "Sign up failed!",
+        type: "error",
+      });
+    }
+  } catch (error) {
+    console.error("Error during signup:", error);
+    toastMessage({
+      message: "An error occurred during signup. Please try again.",
+      type: "error",
+    });
+  }
 };
 
 export default function Signup() {
@@ -75,7 +96,7 @@ export default function Signup() {
   const form = useFormik<SignupFormvalues>({
     initialValues: initialState,
     validationSchema: validationSchema,
-    onSubmit: signupFormSubmit,
+    onSubmit: (values) => signupFormSubmit(values, navigate),
   });
 
   return (
@@ -143,7 +164,7 @@ export default function Signup() {
             error={Boolean(form.errors.Password)}
           />
           <TextField
-            type="text"
+            type="password"
             label="Confirm Password"
             name="confirmPassword"
             value={form.values.confirmPassword}
