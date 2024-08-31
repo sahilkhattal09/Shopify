@@ -3,6 +3,7 @@ import Button from "../UI/Button/Button";
 import "./Sidebar.css";
 import { FaUserCircle } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
+import { useEffect, useState } from "react";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -10,11 +11,19 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
+  const [FirstName, setFirstName] = useState("");
   const sidebarItems = [
     { name: "home" },
     { name: "orders" },
     { name: "settings" },
   ];
+  useEffect(() => {
+    // Retrieve firstName from local storage
+    const storedFirstName = localStorage.getItem("FirstName");
+    if (storedFirstName) {
+      setFirstName(storedFirstName);
+    }
+  }, []);
 
   return (
     <div
@@ -33,7 +42,9 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
       </div>
       <div className="flex flex-col items-center ">
         <CgProfile size={45} color="white" mb-2 />
-        <div className="text-white border-b-2 border-white mt-1">Hey Sahil</div>
+        <div className="text-white border-b-2 border-white mt-1">
+          Hey {FirstName || "User"}
+        </div>
       </div>
 
       <ul className="mt-4 flex flex-col items-center">
