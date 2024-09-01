@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toastMessage } from "../Modules/toast";
+import Header from "../Components/UI/Header/Header";
 
 interface FormValues {
   email: string;
@@ -15,7 +16,7 @@ interface FormValues {
 
 const initialState: FormValues = {
   email: "",
-  Password: "", // Capitalized 'P' here
+  Password: "",
 };
 
 const validationSchema = Yup.object({
@@ -26,7 +27,7 @@ const validationSchema = Yup.object({
       "Please enter a valid email address"
     )
     .required("Email is required"),
-  Password: Yup.string() // Capitalized 'P' here
+  Password: Yup.string()
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
       "Password must be 8+ chars, with 1 uppercase, 1 lowercase, 1 number, and 1 special character"
@@ -73,63 +74,70 @@ export default function Login() {
   });
 
   return (
-    <LoginContainer containerWidth={430}>
-      <div>
-        <Images
-          src={"/Logo/Shopmart.png"}
-          alt={"shopmart logo"}
-          height={250}
-          width={250}
-          className="mx-auto mb-4"
-        />
+    <>
+      {" "}
+      <Header
+        className="fixed top-0 left-0 right-0 z-10"
+        showHamburger={false}
+      />
+      <LoginContainer containerWidth={430} className="mt-24">
+        <div>
+          <Images
+            src={"/Logo/Shopmart.png"}
+            alt={"shopmart logo"}
+            height={250}
+            width={250}
+            className="mx-auto mb-4"
+          />
 
-        <form onSubmit={form.handleSubmit}>
-          <div>
-            <TextField
-              type="email"
-              label="Email"
-              name="email"
-              value={form.values.email}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-              errorMessage={form.touched.email && form.errors.email}
-              error={Boolean(form.errors.email)}
-            />
-          </div>
-          <div className="mt-12">
-            <TextField
-              type="password"
-              label="Password"
-              name="Password" // Capitalized 'P' here
-              value={form.values.Password} // Capitalized 'P' here
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-              errorMessage={form.touched.Password && form.errors.Password}
-              error={Boolean(form.errors.Password)}
-            />
-          </div>
-          <div className="flex justify-center mt-16">
-            <Button
-              type="submit"
-              shape="rounded"
-              varient="colored"
-              className="btn-secondary"
+          <form onSubmit={form.handleSubmit}>
+            <div>
+              <TextField
+                type="email"
+                label="Email"
+                name="email"
+                value={form.values.email}
+                onChange={form.handleChange}
+                onBlur={form.handleBlur}
+                errorMessage={form.touched.email && form.errors.email}
+                error={Boolean(form.errors.email)}
+              />
+            </div>
+            <div className="mt-12">
+              <TextField
+                type="password"
+                label="Password"
+                name="Password" // Capitalized 'P' here
+                value={form.values.Password} // Capitalized 'P' here
+                onChange={form.handleChange}
+                onBlur={form.handleBlur}
+                errorMessage={form.touched.Password && form.errors.Password}
+                error={Boolean(form.errors.Password)}
+              />
+            </div>
+            <div className="flex justify-center mt-16">
+              <Button
+                type="submit"
+                shape="rounded"
+                varient="colored"
+                className="btn-secondary"
+              >
+                Sign in
+              </Button>
+            </div>
+          </form>
+
+          <div className="flex justify-center mt-4">
+            Don't Have an Account?{" "}
+            <span
+              style={{ color: "blue", cursor: "pointer" }}
+              onClick={() => navigate("/signup")}
             >
-              Sign in
-            </Button>
+              Signup
+            </span>
           </div>
-        </form>
-
-        <div className="flex justify-center mt-4">
-          Don't Have an Account?{" "}
-          <span
-            style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/signup")}
-          >
-            Signup
-          </span>
         </div>
-      </div>
-    </LoginContainer>
+      </LoginContainer>
+    </>
   );
 }

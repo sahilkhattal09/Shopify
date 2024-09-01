@@ -11,9 +11,9 @@ export default function LoginContainer({
   className?: string;
 }) {
   return (
-    <div className={`flex justify-center items-center  ${className}`}>
+    <div className={`flex justify-center items-center h-screen  ${className}`}>
       <div
-        className={`bg-white p-8 rounded-lg custom-shadow `}
+        className={`bg-white p-8 rounded-lg custom-shadow`}
         style={{ width: `${containerWidth}px` }}
       >
         {children}

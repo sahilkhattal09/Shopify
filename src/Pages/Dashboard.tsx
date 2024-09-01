@@ -3,7 +3,6 @@ import Header from "../Components/UI/Header/Header";
 import Sidebar from "../Components/Sidebar/Sidebar";
 import Images from "../Components/Image/Images";
 import Carousel from "../Components/UI/Carousel/Carousel";
-import Card from "../Components/UI/Card/Card";
 import CardContainer from "../Components/UI/Containers/CardContainer";
 import CardGroup from "../Components/UI/Card/CardGroup";
 
