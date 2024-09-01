@@ -76,7 +76,10 @@ export default function Login() {
   return (
     <>
       {" "}
-      <Header className="fixed top-0 left-0 right-0 z-10" />
+      <Header
+        className="fixed top-0 left-0 right-0 z-10"
+        showHamburger={false}
+      />
       <LoginContainer containerWidth={430} className="mt-24">
         <div>
           <Images

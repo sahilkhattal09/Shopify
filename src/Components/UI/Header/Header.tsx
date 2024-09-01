@@ -13,9 +13,14 @@ const navigationItems: NavigationItemsType[] = [
 interface HeaderProps {
   toggleSidebar?: () => void;
   className?: string; // Add className as an optional prop
+  showHamburger?: boolean;
 }
 
-export default function Header({ toggleSidebar, className = "" }: HeaderProps) {
+export default function Header({
+  toggleSidebar,
+  className = "",
+  showHamburger = true,
+}: HeaderProps) {
   const navigate = useNavigate();
 
   return (
@@ -23,13 +28,15 @@ export default function Header({ toggleSidebar, className = "" }: HeaderProps) {
       <div className="container mr-auto flex justify-between items-center">
         {/* Left section with logo and hamburger menu */}
         <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleSidebar}
-            aria-label="Toggle sidebar"
-            className="text-white"
-          >
-            <GiHamburgerMenu size={24} />
-          </button>
+          {showHamburger && ( // Conditionally render the hamburger button
+            <button
+              onClick={toggleSidebar}
+              aria-label="Toggle sidebar"
+              className="text-white"
+            >
+              <GiHamburgerMenu size={24} />
+            </button>
+          )}
           <div
             className="flex items-center space-x-2 ml-2 cursor-pointer"
             onClick={() => navigate("/")}
