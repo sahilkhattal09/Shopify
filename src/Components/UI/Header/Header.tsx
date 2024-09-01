@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Images from "../../Image/Images";
@@ -12,7 +11,7 @@ const navigationItems: NavigationItemsType[] = [
 ];
 
 interface HeaderProps {
-  toggleSidebar: () => void;
+  toggleSidebar?: () => void;
   className?: string; // Add className as an optional prop
 }
 

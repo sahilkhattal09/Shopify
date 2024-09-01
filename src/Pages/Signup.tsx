@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toastMessage } from "../Modules/toast";
 import axios from "axios";
+import SignupContainer from "../Components/UI/Containers/SignupContainer";
 
 interface SignupFormvalues {
   FirstName: string;
@@ -100,7 +101,7 @@ export default function Signup() {
   });
 
   return (
-    <LoginContainer containerWidth={500}>
+    <SignupContainer containerWidth={500}>
       <Images
         src={"/Logo/Shopmart.png"}
         alt={"shopmart logo"}
@@ -202,6 +203,6 @@ export default function Signup() {
           Login
         </span>
       </div>
-    </LoginContainer>
+    </SignupContainer>
   );
 }
