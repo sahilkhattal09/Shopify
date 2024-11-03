@@ -34,8 +34,8 @@ export default function Card({
       />
 
       <div className="p-2 ">
-        <h5 className="text-sm decoration-solid mb-2">{title}</h5>
-        <p className="text-xs  font-bold mb-3">{text}</p>
+        <h5 className="text-sm decoration-solid mb-2">{title.trim()}</h5>
+        <p className="text-xs  font-bold mb-3">{text.trim()}</p>
       </div>
     </div>
   );

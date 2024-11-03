@@ -5,6 +5,7 @@ import Images from "../Components/Image/Images";
 import Carousel from "../Components/UI/Carousel/Carousel";
 import CardContainer from "../Components/UI/Containers/CardContainer";
 import CardGroup from "../Components/UI/Card/CardGroup";
+import Footer from "../Components/Footer/Footer";
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +87,9 @@ export default function Dashboard() {
             </CardContainer>
           </div>
         </div>
+        <Footer className="mt-1" />
       </div>
+
       {isOpen && (
         <div
           className="fixed inset-0 z-10 bg-black bg-opacity-50"
