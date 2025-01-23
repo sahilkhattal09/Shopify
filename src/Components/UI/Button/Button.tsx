@@ -8,6 +8,7 @@ interface ButtonProps {
   varient?: "colored" | "outlined" | "none";
   className?: string;
   type?: "button" | "submit" | "reset"; // Adding type for button types
+  disabled?: boolean; // Adding disabled property
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   varient = "colored",
   className = "",
   type = "button", // Default type
+  disabled = false, // Default disabled value is false
   ...props
 }: ButtonProps) => {
   const baseStyles = "btn-base";
@@ -30,7 +32,13 @@ const Button = ({
   const combinedStyles = `${baseStyles} ${shapeStyles} ${variantStyles} ${className}`;
 
   return (
-    <button onClick={onClick} className={combinedStyles} type={type} {...props}>
+    <button
+      onClick={onClick}
+      className={combinedStyles}
+      type={type}
+      disabled={disabled} // Pass the disabled prop to the button element
+      {...props}
+    >
       {children}
     </button>
   );

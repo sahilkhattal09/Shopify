@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import Images from "../Components/Image/Images";
-import LoginContainer from "../Components/UI/Containers/LoginContainer";
+import SignupContainer from "../Components/UI/Containers/SignupContainer";
 import TextField from "../Components/UI/Textfield/Textfield";
 import Button from "../Components/UI/Button/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toastMessage } from "../Modules/toast";
-import axios from "axios";
-import SignupContainer from "../Components/UI/Containers/SignupContainer";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../Services/api/authApi"; // Import signup action
+import { RootState } from "../app/store/store";
 
 interface SignupFormvalues {
   FirstName: string;
@@ -62,24 +63,24 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-const signupFormSubmit = async (values: SignupFormvalues, navigate: any) => {
+const signupFormSubmit = async (
+  values: SignupFormvalues,
+  dispatch: any,
+  navigate: any
+) => {
   try {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/signup",
-      values
-    );
-
-    if (response.data.message === "User registered successfully") {
+    const action = await dispatch(signup(values)); // Perform signup action
+    if (action.meta.requestStatus === "fulfilled") {
       toastMessage({
-        message: "Sign up successful!",
+        message: "Sign-up successful! ",
         type: "success",
       });
-
-      // Navigate to the login page after a successful signup
-      navigate("/login");
+      navigate("/login"); // Redirect to signin page
     } else {
+      const errorMessage =
+        action.payload?.message || "Sign-up failed! Please try again.";
       toastMessage({
-        message: "Sign up failed!",
+        message: errorMessage,
         type: "error",
       });
     }
@@ -94,10 +95,23 @@ const signupFormSubmit = async (values: SignupFormvalues, navigate: any) => {
 
 export default function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
   const form = useFormik<SignupFormvalues>({
     initialValues: initialState,
     validationSchema: validationSchema,
-    onSubmit: (values) => signupFormSubmit(values, navigate),
+    onSubmit: (values) => {
+      form.setTouched({
+        FirstName: true,
+        LastName: true,
+        email: true,
+        phonenumber: true,
+        Password: true,
+        confirmPassword: true,
+      });
+      signupFormSubmit(values, dispatch, navigate);
+    },
   });
 
   return (
@@ -142,7 +156,7 @@ export default function Signup() {
             error={Boolean(form.errors.email)}
           />
           <TextField
-            type="number"
+            type="tel"
             label="Phone Number"
             name="phonenumber"
             value={form.values.phonenumber}
@@ -152,7 +166,6 @@ export default function Signup() {
             error={Boolean(form.errors.phonenumber)}
           />
         </div>
-
         <div className="flex flex-row space-x-4 mt-4 mb-4">
           <TextField
             type="password"
@@ -181,15 +194,22 @@ export default function Signup() {
             }
           />
         </div>
-
         <div className="flex justify-center mt-4">
           <Button
             type="submit"
             shape="rounded"
             varient="colored"
-            className="btn-secondary"
+            className="btn-secondary flex items-center"
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? (
+              <>
+                <span className="loader border-white border-4 border-t-transparent rounded-full w-4 h-4 animate-spin mr-2"></span>
+                Signing Up...
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </Button>
         </div>
       </form>

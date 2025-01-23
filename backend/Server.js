@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./Routes/auth");
+const imageRoutes = require("./Routes/imageRoutes");
 
 const PORT = 5000;
 const app = express();
@@ -25,6 +26,7 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/images", imageRoutes);
 
 app.get("/test", (req, res) => {
   res.json({ ok: true });

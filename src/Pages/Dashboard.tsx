@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Components/UI/Header/Header";
 import Sidebar from "../Components/Sidebar/Sidebar";
 import Images from "../Components/Image/Images";
 import Carousel from "../Components/UI/Carousel/Carousel";
 import CardContainer from "../Components/UI/Containers/CardContainer";
 import CardGroup from "../Components/UI/Card/CardGroup";
+import axios from "axios";
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
+  const [images, setImages] = useState([]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/images");
+        setImages(response.data); // Assuming the API returns an array of images
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchImages();
+  }, []);
 
   // Define the height of the header to be used as top padding for content
   const headerHeight = 64; // Adjust this value according to your header height

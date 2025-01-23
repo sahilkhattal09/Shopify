@@ -1,23 +1,19 @@
-import LoginContainer from "../Components/UI/Containers/LoginContainer";
-import Images from "../Components/Image/Images";
-import TextField from "../Components/UI/Textfield/Textfield";
-import Button from "../Components/UI/Button/Button";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
 import { toastMessage } from "../Modules/toast";
+
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+import LoginContainer from "../Components/UI/Containers/LoginContainer";
+import Button from "../Components/UI/Button/Button";
+import TextField from "../Components/UI/Textfield/Textfield";
+import Images from "../Components/Image/Images";
 import Header from "../Components/UI/Header/Header";
-
-interface FormValues {
-  email: string;
-  Password: string; // Capitalized 'P' here
-}
-
-const initialState: FormValues = {
-  email: "",
-  Password: "",
-};
+import { clearError } from "../app/Slices/authSlice";
+import { AppDispatch, RootState } from "../app/store/store";
+import { signin } from "../Services/api/authApi";
+import { useEffect } from "react";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -35,47 +31,46 @@ const validationSchema = Yup.object({
     .required("Password is required"),
 });
 
-const SignInFormSubmit = async (values: FormValues, navigate: any) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/signin",
-      values
-    );
-    console.log("Sign-in response:", response.data);
-    if (response.data.message === "Sign in successful") {
+export default function Login() {
+  const dispatch = useDispatch<AppDispatch>(); // Explicitly type dispatch
+  const navigate = useNavigate();
+  const { user, isLoading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const form = useFormik({
+    initialValues: { email: "", Password: "" },
+    validationSchema,
+    onSubmit: (values) => {
+      dispatch(signin(values)); // Dispatch the async thunk action
+    },
+  });
+
+  // Trigger the success toast only once when the user is logged in successfully
+  useEffect(() => {
+    if (user) {
       toastMessage({
         message: "Sign in successful!",
         type: "success",
       });
+      localStorage.setItem("FirstName", user.FirstName);
+      navigate("/");
+    }
+  }, [user, navigate]); // Ensure this effect runs only when `user` state changes
 
-      localStorage.setItem("FirstName", response.data.FirstName);
-      navigate("/dashboard");
-    } else {
+  // Handle error message and clear it after showing the toast
+  useEffect(() => {
+    if (error) {
       toastMessage({
-        message: "Sign in failed!",
+        message: error,
         type: "error",
       });
+      dispatch(clearError()); // Clear the error after displaying the toast
     }
-  } catch (error) {
-    console.error("Error during signin:", error);
-    toastMessage({
-      message: "An error occurred during signin. Please try again.",
-      type: "error",
-    });
-  }
-};
-
-export default function Login() {
-  const navigate = useNavigate();
-  const form = useFormik<FormValues>({
-    initialValues: initialState,
-    validationSchema: validationSchema,
-    onSubmit: (values) => SignInFormSubmit(values, navigate),
-  });
+  }, [error, dispatch]);
 
   return (
     <>
-      {" "}
       <Header
         className="fixed top-0 left-0 right-0 z-10"
         showHamburger={false}
@@ -89,7 +84,6 @@ export default function Login() {
             width={250}
             className="mx-auto mb-4"
           />
-
           <form onSubmit={form.handleSubmit}>
             <div>
               <TextField
@@ -107,8 +101,8 @@ export default function Login() {
               <TextField
                 type="password"
                 label="Password"
-                name="Password" // Capitalized 'P' here
-                value={form.values.Password} // Capitalized 'P' here
+                name="Password"
+                value={form.values.Password}
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
                 errorMessage={form.touched.Password && form.errors.Password}
@@ -122,11 +116,10 @@ export default function Login() {
                 varient="colored"
                 className="btn-secondary"
               >
-                Sign in
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </div>
           </form>
-
           <div className="flex justify-center mt-4">
             Don't Have an Account?{" "}
             <span
