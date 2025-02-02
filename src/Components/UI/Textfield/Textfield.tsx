@@ -5,7 +5,7 @@ import ErrorMessage from "../../Error/ErrortextMessage";
 interface TextFieldProps {
   label?: string;
   className?: string;
-  type?: "text" | "email" | "password" | "number";
+  type?: "text" | "email" | "password" | "tel" | "number";
   error?: boolean;
   name?: string;
   value?: string;

@@ -1,59 +1,42 @@
+import React from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "../UI/Button/Button";
-import "./Sidebar.css";
 import { CgProfile } from "react-icons/cg";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { toastMessage } from "../../Modules/toast";
+import { logout } from "../../app/Slices/authSlice";
 
 type SidebarProps = {
   isOpen: boolean;
   toggleSidebar: () => void;
 };
 
-export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
-  const [FirstName, setFirstName] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate(); // Hook for navigation
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isLoggedIn } = useSelector((state: any) => state.auth);
 
-  // Update state based on local storage value
-  useEffect(() => {
-    const storedFirstName = localStorage.getItem("FirstName");
-    if (storedFirstName) {
-      setFirstName(storedFirstName);
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
+  // Handle logout action
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("FirstName"); // Optionally clear storage
+    toastMessage({
+      message: "Logged out successfully.",
+      type: "success",
+    });
 
-  // Handle click events for sidebar items
-  const handleSidebarItemClick = (item: string) => {
-    if (item === "Logout") {
-      // Perform logout
-      localStorage.removeItem("FirstName");
-      setFirstName("");
-      toastMessage({
-        message: "Logged out successfully.",
-        type: "success",
-      });
-      setTimeout(() => {
-        setIsLoggedIn(false);
-      }, 2000);
-      // Redirect to login page
-      navigate("/login");
-    } else if (item === "Login") {
-      // Redirect to login page or show login form
-      navigate("/login");
-    }
+    setTimeout(() => {
+      navigate("/login"); // Redirect to login page
+    }, 2000);
   };
 
-  // Sidebar items including the conditional Logout/Login button
+  // Sidebar items
   const sidebarItems = [
-    { name: "home" },
-    { name: "orders" },
-    { name: "settings" },
-    { name: isLoggedIn ? "Logout" : "Login" }, // Conditional button name
+    { name: "Home" },
+    { name: "Orders" },
+    { name: "Settings" },
+    { name: isLoggedIn ? "Logout" : "Login" },
   ];
 
   return (
@@ -74,17 +57,20 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
       <div className="flex flex-col items-center">
         <CgProfile size={45} color="white" mb-2 />
         <div className="text-white border-b-2 border-white mt-1">
-          Hey {FirstName || "User"}
+          Hey {user?.FirstName || "User"}
         </div>
       </div>
-
       <ul className="mt-4 flex flex-col items-center">
         {sidebarItems.map((item, index) => (
           <li key={index} className="w-[96%] mt-2 mx-4">
             <Button
               className="text-black p-4 rounded-lg border border-white bg-softBlue transition-colors duration-300 hover:bg-darkerSoftBlue w-full h-full"
               varient="none"
-              onClick={() => handleSidebarItemClick(item.name)}
+              onClick={() =>
+                item.name === "Logout"
+                  ? handleLogout()
+                  : navigate(item.name.toLowerCase())
+              }
             >
               {item.name}
             </Button>
@@ -93,4 +79,6 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
       </ul>
     </div>
   );
-}
+};
+
+export default Sidebar;

@@ -1,14 +1,14 @@
 interface ErrorMessageProps {
   error?: boolean;
-  message?: string | undefined;
+  message?: string;
   className?: string;
 }
 
-export default function ErrorMessage({
+const ErrorMessage: React.FC<ErrorMessageProps> = ({
   error,
   message,
-  className,
-}: ErrorMessageProps) {
+  className = "",
+}) => {
   return (
     <div
       className={`text-xs ${
@@ -18,4 +18,6 @@ export default function ErrorMessage({
       {message}
     </div>
   );
-}
+};
+
+export default ErrorMessage;

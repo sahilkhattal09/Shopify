@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import Images from "../../Image/Images";
 
 interface CardProps {
-  Src: string;
+  src: string;
   imageAlt?: string;
   title?: string;
   text?: string;
@@ -14,7 +14,7 @@ interface CardProps {
 }
 
 export default function Card({
-  Src,
+  src,
   imageAlt = "Default Alt Text",
   title = "Default Title",
   text = "Default Text",
@@ -28,7 +28,7 @@ export default function Card({
       style={{ width, height }}
     >
       <Images
-        src={Src}
+        src={src}
         alt={imageAlt}
         className="w-full h-32 object-cover  transition-transform duration-300 transform hover:scale-105" // Adjusted height to match card size
       />

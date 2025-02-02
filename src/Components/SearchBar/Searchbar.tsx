@@ -5,12 +5,14 @@ interface SearchBarProps {
   suggestions: string[];
   placeholder?: string;
   onSearch?: (searchTerm: string) => void;
+  className?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   suggestions,
   placeholder,
   onSearch,
+  className,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
