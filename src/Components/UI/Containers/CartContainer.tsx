@@ -1,9 +1,19 @@
 import React from "react";
 
-export default function CartContainer() {
+interface CartContainerProps {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export default function CartContainer({
+  children,
+  className = "",
+}: CartContainerProps) {
   return (
-    <div className="cart-container container mx-auto my-6 p-6 bg-white shadow-lg rounded-lg">
-      <slot></slot>
+    <div
+      className={`container mx-auto my-6 p-6 bg-white shadow-2xl rounded-lg ${className}`}
+    >
+      {children}
     </div>
   );
 }

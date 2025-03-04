@@ -7,8 +7,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toastMessage } from "../Modules/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from "../Services/api/authApi"; // Import signup action
+import { signup } from "../Services/api/authApi";
 import { RootState } from "../app/store/store";
+import Header from "../Components/UI/Header/Header";
 
 interface SignupFormvalues {
   FirstName: string;
@@ -33,12 +34,10 @@ const validationSchema = Yup.object({
     .max(15, "First Name must be at most 15 characters long")
     .matches(/^[A-Za-z]+$/, "First Name must contain only letters")
     .required("First Name is required"),
-
   LastName: Yup.string()
     .max(15, "Last Name must be at most 15 characters long")
     .matches(/^[A-Za-z]+$/, "Last Name must contain only letters")
     .required("Last Name is required"),
-
   email: Yup.string()
     .email("Invalid email address")
     .matches(
@@ -69,20 +68,14 @@ const signupFormSubmit = async (
   navigate: any
 ) => {
   try {
-    const action = await dispatch(signup(values)); // Perform signup action
+    const action = await dispatch(signup(values));
     if (action.meta.requestStatus === "fulfilled") {
-      toastMessage({
-        message: "Sign-up successful! ",
-        type: "success",
-      });
-      navigate("/login"); // Redirect to signin page
+      toastMessage({ message: "Sign-up successful! ", type: "success" });
+      navigate("/login");
     } else {
       const errorMessage =
         action.payload?.message || "Sign-up failed! Please try again.";
-      toastMessage({
-        message: errorMessage,
-        type: "error",
-      });
+      toastMessage({ message: errorMessage, type: "error" });
     }
   } catch (error) {
     console.error("Error during signup:", error);
@@ -96,11 +89,11 @@ const signupFormSubmit = async (
 export default function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+  const { isLoading } = useSelector((state: RootState) => state.auth);
 
   const form = useFormik<SignupFormvalues>({
     initialValues: initialState,
-    validationSchema: validationSchema,
+    validationSchema,
     onSubmit: (values) => {
       form.setTouched({
         FirstName: true,
@@ -115,114 +108,122 @@ export default function Signup() {
   });
 
   return (
-    <SignupContainer containerWidth={500}>
-      <Images
-        src={"/Logo/Shopmart.png"}
-        alt={"shopmart logo"}
-        height={250}
-        width={250}
-        className="mx-auto mb-4"
+    <>
+      {/* Header Component */}
+      <Header
+        className="fixed top-0 left-0 right-0 z-10"
+        showHamburger={false}
       />
-      <form onSubmit={form.handleSubmit}>
-        <div className="flex flex-row space-x-4">
-          <TextField
-            label="First Name"
-            name="FirstName"
-            value={form.values.FirstName}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={form.touched.FirstName && form.errors.FirstName}
-            error={Boolean(form.errors.FirstName)}
-          />
-          <TextField
-            label="Last Name"
-            name="LastName"
-            value={form.values.LastName}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={form.touched.LastName && form.errors.LastName}
-            error={Boolean(form.errors.LastName)}
-          />
-        </div>
-        <div className="flex flex-row space-x-4 mt-4">
-          <TextField
-            type="email"
-            label="Email"
-            name="email"
-            value={form.values.email}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={form.touched.email && form.errors.email}
-            error={Boolean(form.errors.email)}
-          />
-          <TextField
-            type="tel"
-            label="Phone Number"
-            name="phonenumber"
-            value={form.values.phonenumber}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={form.touched.phonenumber && form.errors.phonenumber}
-            error={Boolean(form.errors.phonenumber)}
-          />
-        </div>
-        <div className="flex flex-row space-x-4 mt-4 mb-4">
-          <TextField
-            type="password"
-            label="Password"
-            name="Password"
-            value={form.values.Password}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={form.touched.Password && form.errors.Password}
-            error={Boolean(form.errors.Password)}
-          />
-          <TextField
-            type="password"
-            label="Confirm Password"
-            name="confirmPassword"
-            value={form.values.confirmPassword}
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            errorMessage={
-              form.touched.confirmPassword && form.errors.confirmPassword
-            }
-            error={Boolean(form.errors.confirmPassword)}
-            showCheckmark={
-              !!form.values.Password &&
-              form.values.Password === form.values.confirmPassword
-            }
-          />
-        </div>
-        <div className="flex justify-center mt-4">
-          <Button
-            type="submit"
-            shape="rounded"
-            varient="colored"
-            className="btn-secondary flex items-center"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="loader border-white border-4 border-t-transparent rounded-full w-4 h-4 animate-spin mr-2"></span>
-                Signing Up...
-              </>
-            ) : (
-              "Sign Up"
-            )}
-          </Button>
-        </div>
-      </form>
 
-      <div className="flex justify-center mt-4">
-        Have an Account?
-        <span
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </span>
-      </div>
-    </SignupContainer>
+      <SignupContainer containerWidth={480}>
+        <Images
+          src={"/Logo/Shopmart.png"}
+          alt={"shopmart logo"}
+          height={160}
+          width={160}
+          className="mx-auto mb-4"
+        />
+        <form onSubmit={form.handleSubmit}>
+          <div className="flex flex-row space-x-4">
+            <TextField
+              label="First Name"
+              name="FirstName"
+              value={form.values.FirstName}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.FirstName && form.errors.FirstName}
+              error={Boolean(form.errors.FirstName)}
+            />
+            <TextField
+              label="Last Name"
+              name="LastName"
+              value={form.values.LastName}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.LastName && form.errors.LastName}
+              error={Boolean(form.errors.LastName)}
+            />
+          </div>
+          <div className="flex flex-row space-x-4 mt-4">
+            <TextField
+              type="email"
+              label="Email"
+              name="email"
+              value={form.values.email}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.email && form.errors.email}
+              error={Boolean(form.errors.email)}
+            />
+            <TextField
+              type="tel"
+              label="Phone Number"
+              name="phonenumber"
+              value={form.values.phonenumber}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.phonenumber && form.errors.phonenumber}
+              error={Boolean(form.errors.phonenumber)}
+            />
+          </div>
+          <div className="flex flex-row space-x-4 mt-4 mb-4">
+            <TextField
+              type="password"
+              label="Password"
+              name="Password"
+              value={form.values.Password}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={form.touched.Password && form.errors.Password}
+              error={Boolean(form.errors.Password)}
+            />
+            <TextField
+              type="password"
+              label="Confirm Password"
+              name="confirmPassword"
+              value={form.values.confirmPassword}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+              errorMessage={
+                form.touched.confirmPassword && form.errors.confirmPassword
+              }
+              error={Boolean(form.errors.confirmPassword)}
+              showCheckmark={
+                !!form.values.Password &&
+                form.values.Password === form.values.confirmPassword
+              }
+            />
+          </div>
+          <div className="flex justify-center mt-4">
+            <Button
+              type="submit"
+              shape="rounded"
+              varient="colored"
+              className="btn-secondary flex items-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className="loader border-white border-4 border-t-transparent rounded-full w-4 h-4 animate-spin mr-2"></span>
+                  Signing Up...
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </Button>
+          </div>
+        </form>
+
+        <div className="flex justify-center mt-4">
+          Have an Account?
+          <span
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </div>
+      </SignupContainer>
+    </>
   );
 }
