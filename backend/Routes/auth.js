@@ -43,32 +43,38 @@ router.post("/signin", async (req, res) => {
   const { email, Password } = req.body;
 
   try {
+    // Validate request body
+    if (!email || !Password) {
+      return res
+        .status(400)
+        .json({ message: "Email and Password are required" });
+    }
+
     // Check if the user exists in the database
     const user = await User.findOne({ email });
 
-    // If user is not found
+    // If user is not found, return error message
     if (!user) {
-      return res
-        .status(400)
-        .json({ FirstName: user.FirstName, message: "Account not found" });
+      return res.status(400).json({ message: "Account not found" });
     }
 
     // Compare the password with the hashed password in the database
     const isMatch = await bcrypt.compare(Password, user.Password);
 
-    // If the password does not match
+    // If the password does not match, return error message
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // If everything is okay, return success
+    // If authentication is successful, return success response
     res
       .status(200)
       .json({ message: "Sign in successful", FirstName: user.FirstName });
   } catch (error) {
-    console.error(error);
+    console.error("Signin Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 // Export the router
 module.exports = router;
