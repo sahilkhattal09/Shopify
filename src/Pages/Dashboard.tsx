@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Components/UI/Header/Header";
 import Sidebar from "../Components/Sidebar/Sidebar";
-import Images from "../Components/Image/Images";
 import Carousel from "../Components/UI/Carousel/Carousel";
 import CardContainer from "../Components/UI/Containers/CardContainer";
 import CardGroup from "../Components/UI/Card/CardGroup";
 import Footer from "../Components/Footer/Footer";
-import axios from "axios";
+
+import { ImageData } from "../types/types";
+import CategorySection from "../Components/UI/category/CategorySection";
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
-  const [images, setImages] = useState([]);
+
+  const [images, setImages] = useState<ImageData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -18,10 +22,29 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/images");
-        setImages(response.data); // Assuming the API returns an array of images
+        const response = await fetch("http://localhost:5000/api/images");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const rawData: ImageData[] = await response.json();
+
+        // Convert binary data to Base64 for each image
+        const processedData = rawData.map((card) => ({
+          ...card,
+          src: `data:${card.contentType};base64,${btoa(
+            Array.from(new Uint8Array(card.data.data), (byte) =>
+              String.fromCharCode(byte)
+            ).join("")
+          )}`,
+        }));
+
+        setImages(processedData);
+        setError(null);
       } catch (error) {
         console.error("Error fetching images:", error);
+        setError("Failed to fetch images.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,6 +53,13 @@ export default function Dashboard() {
 
   // Define the height of the header to be used as top padding for content
   const headerHeight = 64; // Adjust this value according to your header height
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
+  const trendingImages = images.filter(
+    (img) => img.category === "Trending Products"
+  );
 
   return (
     <div className="relative flex h-screen">
@@ -44,60 +74,17 @@ export default function Dashboard() {
           className="w-full px-2 mt-2"
           style={{ paddingTop: `${headerHeight + 20}px` }} // Added 20px to headerHeight
         >
-          <div className="bg-gray-200 p-12 shadow-md h-40 flex items-center">
-            {[
-              { src: "/icon/Toy.png", alt: "toy", order: 1, text: "Toys" },
-              { src: "/icon/gym.png", alt: "gym", order: 2, text: "gym" },
-              {
-                src: "/icon/HomeAppliances.png",
-                alt: "car",
-                order: 3,
-                text: "Home Appliances",
-              },
-              {
-                src: "/icon/Mobile.png",
-                alt: "ball",
-                order: 4,
-                text: "Mobile",
-              },
-              {
-                src: "/icon/watch.png",
-                alt: "bike",
-                order: 5,
-                text: "Watches",
-              },
-              {
-                src: "/icon/shopping.png",
-                alt: "shopping",
-                order: 6,
-                text: "Grocery",
-              },
-            ].map((image, index) => (
-              <div
-                key={index}
-                className={`order-${image.order} flex-1 flex flex-col items-center`}
-              >
-                <Images
-                  src={image.src}
-                  alt={image.alt}
-                  height={105}
-                  width={105}
-                  className="mx-auto mb-4  transition-transform duration-300 transform hover:scale-105"
-                />
-                <p className="text-center text-sm font-bold">{image.text}</p>
-              </div>
-            ))}
-          </div>
+          <CategorySection />
           <div className="mb-3">
             <Carousel />
           </div>
 
           <CardContainer title="Trending Products">
-            <CardGroup />
+            <CardGroup cardData={trendingImages} initialLimit={6} />
           </CardContainer>
           <div className="mt-2">
             <CardContainer title="Trending Products">
-              <CardGroup />
+              <CardGroup cardData={[]} />
             </CardContainer>
           </div>
         </div>
