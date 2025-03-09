@@ -1,72 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Card from "./Card";
+import { ImageData } from "../../../types/types";
 
-interface CardData {
-  _id: string;
-  data: { data: number[] }; // Binary data (Buffer) from the backend
-  contentType: string; // MIME type (e.g., "image/jpeg")
-  name: string; // Product name
-  price: number; // Price field from backend
-  src?: string; // Base64 encoded image source
+interface CardGroupProps {
+  cardData: ImageData[];
+  initialLimit?: number;
 }
 
-export default function CardGroup() {
-  const [cardData, setCardData] = useState<CardData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function CardGroup({
+  cardData,
+  initialLimit = 6,
+}: CardGroupProps) {
+  const [limit, setLimit] = useState(initialLimit);
+  const [arrowImage, setArrowImage] = useState<string | null>(null);
+  const arrowImageId = "67cc166f6597930739d0aceb"; // Arrow image ID in MongoDB
 
+  // Fetch the arrow image from the backend
   useEffect(() => {
-    const fetchCardData = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/images");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const rawData: CardData[] = await response.json();
-
-        // Convert binary data to Base64
-        const processedData = rawData.map((card) => ({
-          ...card,
-          src: `data:${card.contentType};base64,${btoa(
-            Array.from(new Uint8Array(card.data.data), (byte) =>
-              String.fromCharCode(byte)
-            ).join("")
-          )}`,
-        }));
-
-        setCardData(processedData);
-        setError(null);
-      } catch (error) {
-        console.error("Error fetching card data:", error);
-        setError("Failed to fetch card data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCardData();
+    axios
+      .get(`http://localhost:5000/api/images/${arrowImageId}`)
+      .then((response) => {
+        setArrowImage(response.data.imageUrl);
+      })
+      .catch((error) => {
+        console.error("Error fetching arrow image:", error);
+      });
   }, []);
 
-  if (loading) {
-    return <p>Loading cards...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
-
   return (
-    <div className="flex flex-row gap-4 flex-wrap">
-      {cardData.map((card) => (
+    <div className="flex flex-wrap items-center gap-4">
+      {cardData.slice(0, limit).map((card) => (
         <Card
           key={card._id}
-          src={card.src || "placeholder.jpg"} // Placeholder for missing images
+          src={card.src || "placeholder.jpg"}
           title={card.name || "Unnamed Product"}
-          text={`Price: ₹${card.price || "N/A"}`}
+          text={`Price: ₹${card.price ?? "N/A"}`}
           onButtonClick={() => console.log(`Card ${card.name} clicked`)}
         />
       ))}
+
+      {/* Show More Button with Arrow Image */}
+      {limit < cardData.length && (
+        <button
+          onClick={() => setLimit((prev) => prev + 6)}
+          className="ml-4 p-3 bg-gray-800 rounded-full flex justify-center items-center transition-transform hover:scale-110"
+        >
+          {arrowImage ? (
+            <img src={arrowImage} alt="Arrow" className="w-8 h-8" />
+          ) : (
+            <span className="text-white text-sm">Loading...</span>
+          )}
+        </button>
+      )}
     </div>
   );
 }
