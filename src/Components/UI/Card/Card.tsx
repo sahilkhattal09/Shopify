@@ -1,5 +1,3 @@
-import React from "react";
-import Button from "../Button/Button";
 import Images from "../../Image/Images";
 
 interface CardProps {
@@ -7,10 +5,6 @@ interface CardProps {
   imageAlt?: string;
   title?: string;
   text?: string;
-
-  onButtonClick: () => void;
-  width?: string; // Optional prop
-  height?: string; // Optional prop
 }
 
 export default function Card({
@@ -18,24 +12,20 @@ export default function Card({
   imageAlt = "Default Alt Text",
   title = "Default Title",
   text = "Default Text",
-
-  width = "14%", // Adjusted width to fit 7 cards
-  height = "auto", // Default height
 }: CardProps) {
   return (
-    <div
-      className="border border-gray-300 rounded overflow-hidden shadow-md"
-      style={{ width, height }}
-    >
-      <Images
-        src={src}
-        alt={imageAlt}
-        className="w-full h-32 object-cover  transition-transform duration-300 transform hover:scale-105" // Adjusted height to match card size
-      />
+    <div className="border border-gray-300 rounded-lg shadow-md bg-white overflow-hidden w-full sm:w-[48%] md:w-[30%] lg:w-[22%] xl:w-[18%] p-3">
+      <div className="w-full h-40 flex items-center justify-center overflow-hidden">
+        <Images
+          src={src}
+          alt={imageAlt}
+          className="w-auto h-full max-h-full object-contain"
+        />
+      </div>
 
-      <div className="p-2 ">
-        <h5 className="text-sm decoration-solid mb-2">{title.trim()}</h5>
-        <p className="text-xs  font-bold mb-3">{text.trim()}</p>
+      <div className="p-2 text-center">
+        <h5 className="text-sm font-semibold">{title.trim()}</h5>
+        <p className="text-xs font-bold text-gray-600">{text.trim()}</p>
       </div>
     </div>
   );
