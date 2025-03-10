@@ -20,8 +20,9 @@ export default function Header({
 
   return (
     <div className={`bg-gray-800 p-4 ${className}`}>
-      <div className="flex items-center">
-        {/* Left section with logo and hamburger menu */}
+      {/* Large Screen Layout */}
+      <div className="hidden sm:flex items-center">
+        {/* Left: Logo & Hamburger */}
         <div className="flex items-center space-x-4">
           {showHamburger && (
             <button
@@ -49,7 +50,7 @@ export default function Header({
           </div>
         </div>
 
-        {/* Center section with SearchBar */}
+        {/* Center: SearchBar */}
         <div className="flex-1 flex justify-center">
           <SearchBar
             suggestions={[]}
@@ -58,7 +59,7 @@ export default function Header({
           />
         </div>
 
-        {/* Right section with cart button */}
+        {/* Right: Cart Button */}
         <div className="flex items-center">
           <Button
             onClick={() => navigate("/cart")}
@@ -67,6 +68,46 @@ export default function Header({
           >
             <FaShoppingCart size={24} />
           </Button>
+        </div>
+      </div>
+
+      {/* Small Screens Layout */}
+      <div className="sm:hidden flex flex-col items-center relative">
+        {/* Cart Button - Fully to the Right */}
+        <div className="absolute right-2 top-2">
+          <Button
+            onClick={() => navigate("/cart")}
+            className="text-white hover:text-gray-300"
+            aria-label="Go to cart"
+          >
+            <FaShoppingCart size={24} />
+          </Button>
+        </div>
+
+        {/* Centered Logo & Text */}
+        <div
+          className="absolute left-1/2 transform -translate-x-1/2 top-2 flex items-center space-x-2 cursor-pointer"
+          onClick={() => navigate("/")}
+          aria-label="Navigate to home"
+        >
+          <Images
+            src="/Logo/Shopmart.png"
+            alt="Shopmart logo"
+            height={45}
+            width={45}
+          />
+          <span className="text-white font-cursive font-extrabold text-2xl">
+            ShopMart
+          </span>
+        </div>
+
+        {/* Search Bar - Narrower for Small Screens */}
+        <div className="w-full px-4 mt-14 flex justify-center">
+          <SearchBar
+            suggestions={[]}
+            placeholder="Search for Products, brands, and more"
+            className="w-[60%] max-w-[250px]"
+          />
         </div>
       </div>
     </div>
