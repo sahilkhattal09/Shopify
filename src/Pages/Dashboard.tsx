@@ -61,6 +61,10 @@ export default function Dashboard() {
     (img) => img.category === "Trending Products"
   );
 
+  const SmartphoneImages = images.filter(
+    (img) => img.category === "Smartphonedeals"
+  );
+
   return (
     <div className="relative flex h-screen">
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
@@ -83,8 +87,8 @@ export default function Dashboard() {
             <CardGroup cardData={trendingImages} initialLimit={6} />
           </CardContainer>
           <div className="mt-2">
-            <CardContainer title="Trending Products">
-              <CardGroup cardData={[]} />
+            <CardContainer title="Best Deals On Smartphones">
+              <CardGroup cardData={SmartphoneImages} />
             </CardContainer>
           </div>
         </div>
