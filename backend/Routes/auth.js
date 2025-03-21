@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const generateToken = require("../utils/generateToken");
 
 const router = express.Router();
 
@@ -31,6 +32,15 @@ router.post("/signup", async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
+    const token = generateToken(newUser._id);
+
+    // Send token in HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 1 hour expiration
+    });
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -65,6 +75,17 @@ router.post("/signin", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    const token = generateToken(user._id);
+    // Send token in HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents JavaScript access (XSS protection)
+      secure: process.env.NODE_ENV === "production", // Secure in production
+      sameSite: "Strict", // Prevent CSRF attacks
+      maxAge: 60 * 60 * 1000, // 1 hour expiration
+    });
+
+    // Send token in HTTP-only cookie
 
     // If authentication is successful, return success response
     res

@@ -11,6 +11,7 @@ export const signin = createAsyncThunk(
         `${StaticUtils.accountsURL}/signin`,
         requestData
       );
+
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error?.response?.data || error);
@@ -26,6 +27,7 @@ export const signup = createAsyncThunk(
         `${StaticUtils.accountsURL}/signup`,
         requestData
       );
+
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error?.response?.data || error);

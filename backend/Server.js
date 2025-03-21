@@ -4,6 +4,8 @@ const cors = require("cors");
 const path = require("path");
 const authRoutes = require("./Routes/auth");
 const imageRoutes = require("./Routes/imageRoutes");
+const productRoutes = require("./Routes/productRoutes");
+const cookieParser = require("cookie-parser");
 
 const PORT = 5000;
 const app = express();
@@ -11,7 +13,13 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // 🔹 Update this to match your frontend URL
+    credentials: true, // ✅ Allows sending cookies
+  })
+);
 
 // Serve static files from the "uploads" directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -28,6 +36,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/products", productRoutes);
 
 app.get("/test", (req, res) => {
   res.json({ ok: true });
