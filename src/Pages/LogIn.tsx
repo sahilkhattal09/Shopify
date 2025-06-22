@@ -54,7 +54,12 @@ export default function Login() {
         type: "success",
       });
       localStorage.setItem("FirstName", user.FirstName);
-      navigate("/");
+
+      if (user.role === "admin") {
+        navigate("/admin/AdminDashboard");
+      } else {
+        navigate("/");
+      }
     }
   }, [user, navigate]); // Ensure this effect runs only when `user` state changes
 

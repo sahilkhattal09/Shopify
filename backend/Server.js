@@ -5,6 +5,7 @@ const path = require("path");
 const authRoutes = require("./Routes/auth");
 const imageRoutes = require("./Routes/imageRoutes");
 const productRoutes = require("./Routes/productRoutes");
+const adminRoutes = require("./Routes/adminRoutes");
 const cookieParser = require("cookie-parser");
 
 const PORT = 5000;
@@ -37,6 +38,7 @@ mongoose
 app.use("/api/auth", authRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/products", productRoutes);
+app.use("/admin", adminRoutes);
 
 app.get("/test", (req, res) => {
   res.json({ ok: true });
