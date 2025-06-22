@@ -12,7 +12,7 @@ export const signin = createAsyncThunk(
         requestData
       );
       console.log("API Signin Response →", res.data);
-      return res.data;
+      return res.data.user;
     } catch (error: any) {
       return rejectWithValue(error?.response?.data || error);
     }

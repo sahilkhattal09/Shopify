@@ -6,7 +6,7 @@ import Dashboard from "./Pages/Dashboard";
 import Cart from "./Pages/Cart";
 import UploadProduct, {
   ProductState,
-} from "./admin/adminComponents/ProductUpload";
+} from "./admin/adminComponents/UploadProduct";
 
 // You need to create this page
 import { ToastContainer } from "react-toastify";

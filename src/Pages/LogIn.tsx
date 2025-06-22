@@ -49,6 +49,7 @@ export default function Login() {
   // Trigger the success toast only once when the user is logged in successfully
   useEffect(() => {
     if (user) {
+      console.log("Logged-in user:", user);
       toastMessage({
         message: "Sign in successful!",
         type: "success",
@@ -56,7 +57,7 @@ export default function Login() {
       localStorage.setItem("FirstName", user.FirstName);
 
       if (user.role === "admin") {
-        navigate("/admin/AdminDashboard");
+        navigate("/admin/dashboard");
       } else {
         navigate("/");
       }

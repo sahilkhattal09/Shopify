@@ -1,9 +1,9 @@
 // src/Pages/Admin/UploadProductPage.tsx
 import React, { useState } from "react";
-import UploadProduct from "../admin/adminComponents/ProductUpload";
+import UploadProduct from "../admin/adminComponents/UploadProduct";
 
 // Import ProductState interface from where it's defined
-import { ProductState } from "../admin/adminComponents/ProductUpload";
+import { ProductState } from "../admin/adminComponents/UploadProduct";
 
 const UploadProductPage = () => {
   // Initial product state for form fields, with correct types
