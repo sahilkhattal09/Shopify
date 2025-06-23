@@ -11,7 +11,8 @@ export const signin = createAsyncThunk(
         `${StaticUtils.accountsURL}/signin`,
         requestData
       );
-      return res.data;
+      console.log("API Signin Response →", res.data);
+      return res.data.user;
     } catch (error: any) {
       return rejectWithValue(error?.response?.data || error);
     }
@@ -26,6 +27,7 @@ export const signup = createAsyncThunk(
         `${StaticUtils.accountsURL}/signup`,
         requestData
       );
+
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error?.response?.data || error);

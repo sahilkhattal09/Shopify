@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const generateToken = require("../utils/generateToken");
 
 const router = express.Router();
 
@@ -31,6 +32,15 @@ router.post("/signup", async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
+    const token = generateToken(newUser._id);
+
+    // Send token in HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 1 hour expiration
+    });
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -39,42 +49,51 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// Signin Route
 router.post("/signin", async (req, res) => {
   const { email, Password } = req.body;
 
   try {
-    // Validate request body
     if (!email || !Password) {
       return res
         .status(400)
         .json({ message: "Email and Password are required" });
     }
 
-    // Check if the user exists in the database
     const user = await User.findOne({ email });
 
-    // If user is not found, return error message
     if (!user) {
       return res.status(400).json({ message: "Account not found" });
     }
 
-    // Compare the password with the hashed password in the database
     const isMatch = await bcrypt.compare(Password, user.Password);
-
-    // If the password does not match, return error message
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // If authentication is successful, return success response
-    res
-      .status(200)
-      .json({ message: "Sign in successful", FirstName: user.FirstName });
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      message: "Sign in successful",
+      user: {
+        id: user._id,
+        FirstName: user.FirstName,
+        role: user.role,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error("Signin Error:", error);
     res.status(500).json({ message: "Server error" });
   }
-});
+}); // ← Make sure this closes the `router.post(...)` function
 
-// Export the router
+// ✅ Final closing bracket for the file
 module.exports = router;
