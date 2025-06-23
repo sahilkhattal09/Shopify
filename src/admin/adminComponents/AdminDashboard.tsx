@@ -1,36 +1,24 @@
-import { useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AppBar from "./AppBar";
-import AdminCard from "./AdminCard";
-import UploadProduct, { ProductState } from "./UploadProduct";
+import React from "react";
+import AdminCard from "./cards/AdminCard";
+import TopSellingProducts from "./TopSellingProducts";
+import ReturnedProductsCard from "./cards/ReturnedProductsCard";
+import MostOrderedProductsCard from "./cards/MostOrderedProductsCard";
+import { FiPackage } from "react-icons/fi";
 
 export default function AdminDashboard() {
-  const [product, setProduct] = useState<ProductState>({
-    name: "",
-    price: "",
-    stock: "",
-    imageUrl: "",
-    category: "",
-    description: "",
-    imageFile: null,
-  });
-
   return (
-    <div className="h-screen flex flex-col">
-      {/* Top App Bar */}
-      <AppBar />
+    <div className="p-6 bg-gray-50 overflow-auto h-full">
+      {/* Admin Cards */}
+      <div className="flex justify-evenly gap-4">
+        <AdminCard />
 
-      {/* Sidebar + Content (side by side) */}
-      <div className="flex flex-1">
-        {/* Sidebar - fixed width */}
-        <div className="w-64">
-          <AdminSidebar />
-        </div>
+        <ReturnedProductsCard />
+        <MostOrderedProductsCard />
+      </div>
 
-        {/* Content area - fills remaining space */}
-        <div className="flex-1 p-6 bg-gray-50 overflow-auto">
-          <AdminCard />
-        </div>
+      {/* Top Selling Products */}
+      <div className="mt-12">
+        <TopSellingProducts />
       </div>
     </div>
   );
