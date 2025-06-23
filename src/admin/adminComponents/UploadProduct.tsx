@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import TextField from "../../Components/UI/Textfield/Textfield";
 import Button from "../../Components/UI/Button/Button";
@@ -10,8 +10,9 @@ export interface ProductState {
   imageUrl: string;
   category: string;
   description: string;
-  imageFile: File | null; // Allow imageFile to be a File or null
+  imageFile: File | null;
 }
+
 interface UploadProductProps {
   product: ProductState;
   setProduct: React.Dispatch<React.SetStateAction<ProductState>>;
@@ -21,6 +22,9 @@ const UploadProduct: React.FC<UploadProductProps> = ({
   product,
   setProduct,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dragActive, setDragActive] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -31,6 +35,24 @@ const UploadProduct: React.FC<UploadProductProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setProduct((prev) => ({ ...prev, imageFile: e.target.files![0] }));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setProduct((prev) => ({ ...prev, imageFile: file }));
     }
   };
 
@@ -55,7 +77,6 @@ const UploadProduct: React.FC<UploadProductProps> = ({
       });
       alert("Product added successfully!");
 
-      // Reset form after submission
       setProduct({
         name: "",
         price: "",
@@ -72,8 +93,10 @@ const UploadProduct: React.FC<UploadProductProps> = ({
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-5 border rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Upload Product</h2>
+    <div className="max-w-xl mx-auto mt-6 bg-white border rounded-md shadow-sm p-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        Upload Product
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TextField
           label="Product Name"
@@ -84,16 +107,16 @@ const UploadProduct: React.FC<UploadProductProps> = ({
         <TextField
           label="Price"
           name="price"
+          type="number"
           value={product.price}
           onChange={handleChange}
-          type="number"
         />
         <TextField
           label="Stock"
           name="stock"
+          type="number"
           value={product.stock}
           onChange={handleChange}
-          type="number"
         />
         <TextField
           label="Category ID"
@@ -108,17 +131,37 @@ const UploadProduct: React.FC<UploadProductProps> = ({
           onChange={handleChange}
         />
 
-        {/* File Upload Input */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="w-full p-2 border rounded"
-        />
+        {/* Drag-and-Drop File Upload */}
+        <div
+          className={`w-full border-2 border-dashed rounded-md p-4 text-center cursor-pointer ${
+            dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+          }`}
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {product.imageFile ? (
+            <p className="text-sm text-green-700 font-medium">
+              Selected: {product.imageFile.name}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Drag & drop image here, or click to select
+            </p>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
 
         <Button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
           Upload
         </Button>

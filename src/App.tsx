@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import Unauthorized from "./Pages/Unauthorized";
 import ProtectedRoute from "./Routes/protectedRoute";
 import AdminDashboard from "./admin/adminComponents/AdminDashboard";
+import AdminLayout from "./admin/adminComponents/AdminLayout";
 
 export default function App() {
   const [product, setProduct] = useState<ProductState>({
@@ -37,14 +38,6 @@ export default function App() {
         <Route path="/cart" element={<Cart />} />
 
         <Route
-          path="/admin/product-upload"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <UploadProduct product={product} setProduct={setProduct} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/admin/dashboard"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
@@ -53,6 +46,16 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/admin/product-upload"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminLayout>
+                <UploadProduct product={product} setProduct={setProduct} />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </BrowserRouter>
